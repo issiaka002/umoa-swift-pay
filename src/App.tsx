@@ -8,7 +8,6 @@ import MainLayout from "@/layouts/MainLayout";
 import Dashboard from "@/pages/Dashboard";
 import Transactions from "@/pages/Transactions";
 import Messages from "@/pages/Messages";
-import Participants from "@/pages/Participants";
 import LoginPage from "@/pages/LoginPage";
 import Admin from "@/pages/Admin";
 import NotFound from "@/pages/NotFound";
@@ -28,8 +27,6 @@ const App = () => (
             <Route path="/" element={<Dashboard />} />
             <Route path="/transactions" element={<Transactions />} />
             <Route path="/messages" element={<Messages />} />
-            <Route path="/participants" element={<Participants />} />
-            <Route path="/rapports" element={<NotFound />} />
             <Route path="/configuration" element={<Admin />} />
             <Route path="*" element={<NotFound />} />
           </Route>

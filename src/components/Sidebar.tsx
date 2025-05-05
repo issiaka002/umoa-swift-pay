@@ -16,11 +16,6 @@ const Sidebar = () => {
   const location = useLocation();
   const isActive = (path: string) => location.pathname === path;
 
-  const handleLogout = () => {
-    // Implement logout functionality - redirect to login page
-    window.location.href = '/login';
-  };
-
   return (
     <aside className="w-56 bg-sidebar min-h-screen flex flex-col">
       <div className="p-4 mb-4">
@@ -69,14 +64,6 @@ const Sidebar = () => {
             <p className="text-xs text-white/70">Administrateur</p>
           </div>
         </div>
-        
-        <button 
-          onClick={handleLogout}
-          className="w-full mt-4 flex items-center gap-2 px-3 py-2 rounded-md text-white/90 hover:bg-white/10 transition-colors"
-        >
-          <LogOut size={18} />
-          <span>Déconnexion</span>
-        </button>
       </div>
     </aside>
   );

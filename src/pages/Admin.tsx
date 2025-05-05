@@ -1,167 +1,185 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Header from '@/components/Header';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { Slider } from "@/components/ui/slider";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Moon, Sun, Users, Bell } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import UserAvatar from '@/components/UserAvatar';
+import { 
+  Users, 
+  Lock, 
+  ShieldCheck, 
+  Settings,
+  Pencil, 
+  Trash2 
+} from 'lucide-react';
+
+// Sample statistics data
+const stats = [
+  {
+    value: '15',
+    label: 'Utilisateurs Actifs',
+    icon: <Users size={24} className="text-blue-500" />,
+    bgClass: 'bg-blue-50',
+  },
+  {
+    value: '5',
+    label: 'Rôles Configurés',
+    icon: <Lock size={24} className="text-amber-500" />,
+    bgClass: 'bg-amber-50',
+  },
+  {
+    value: '3',
+    label: 'Certificats Actifs',
+    icon: <ShieldCheck size={24} className="text-red-500" />,
+    bgClass: 'bg-red-50',
+  },
+  {
+    value: '12',
+    label: 'Paramètres Système',
+    icon: <Settings size={24} className="text-purple-500" />,
+    bgClass: 'bg-purple-50',
+  },
+];
+
+// Sample users data
+const users = [
+  {
+    id: '1',
+    name: 'Admin CBAO',
+    email: 'admin@cbao.sn',
+    role: 'Administrateur',
+    status: 'Actif',
+    lastLogin: 'Aujourd\'hui à 10:23',
+  },
+  {
+    id: '2',
+    name: 'Superviseur CBAO',
+    email: 'superviseur@cbao.sn',
+    role: 'Superviseur',
+    status: 'Actif',
+    lastLogin: 'Hier à 16:45',
+  },
+];
 
 const Admin = () => {
-  const [darkMode, setDarkMode] = useState(false);
-  const [fontSize, setFontSize] = useState([16]);
-  const [notifications, setNotifications] = useState({
-    email: true,
-    push: false,
-    sound: true,
-  });
-
-  useEffect(() => {
-    // Apply dark mode theme when component mounts or when darkMode changes
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [darkMode]);
-
-  // Apply font size changes
-  useEffect(() => {
-    document.documentElement.style.fontSize = `${fontSize[0]}px`;
-  }, [fontSize]);
-
   return (
     <div className="flex-1 bg-background min-h-screen">
-      <Header title="Configuration" />
+      <Header title="Administration du Système" />
       
       <main className="p-6">
-        <div className="max-w-4xl mx-auto">
-          <Tabs defaultValue="appearance">
-            <TabsList className="grid grid-cols-3 w-full max-w-md mb-8">
-              <TabsTrigger value="appearance">Apparence</TabsTrigger>
-              <TabsTrigger value="notifications">Notifications</TabsTrigger>
-              <TabsTrigger value="security">Sécurité</TabsTrigger>
+        {/* Stats */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {stats.map((stat, index) => (
+            <div key={index} className="bg-white rounded-lg shadow-sm p-5 flex items-center">
+              <div className={`${stat.bgClass} p-3 rounded-lg mr-4`}>
+                {stat.icon}
+              </div>
+              <div>
+                <div className="text-2xl font-bold">{stat.value}</div>
+                <div className="text-sm text-gray-500">{stat.label}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        {/* Main content with tabs */}
+        <div className="bg-white rounded-lg shadow-sm p-5">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+            <h2 className="text-xl font-bold text-gray-800">Administration du Système</h2>
+            <Button className="bg-primary hover:bg-primary/90">
+              Ajouter un Utilisateur
+            </Button>
+          </div>
+          
+          <Tabs defaultValue="utilisateurs">
+            <TabsList className="mb-6 border-b w-full justify-start rounded-none bg-transparent p-0">
+              <TabsTrigger 
+                value="utilisateurs" 
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+              >
+                Utilisateurs
+              </TabsTrigger>
+              <TabsTrigger 
+                value="roles" 
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+              >
+                Rôles
+              </TabsTrigger>
+              <TabsTrigger 
+                value="certificats" 
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+              >
+                Certificats
+              </TabsTrigger>
+              <TabsTrigger 
+                value="configuration" 
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+              >
+                Configuration
+              </TabsTrigger>
             </TabsList>
             
-            <TabsContent value="appearance" className="space-y-6">
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                <h2 className="text-xl font-medium mb-6">Paramètres d'affichage</h2>
-                
-                <div className="space-y-8">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        {darkMode ? <Moon size={20} /> : <Sun size={20} />}
-                        <Label htmlFor="dark-mode" className="text-base font-medium">Mode sombre</Label>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Réduire la fatigue oculaire lors d'utilisation prolongée
-                      </p>
-                    </div>
-                    <Switch
-                      id="dark-mode"
-                      checked={darkMode}
-                      onCheckedChange={setDarkMode}
-                    />
-                  </div>
-                  
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="font-size" className="text-base font-medium">Taille de police</Label>
-                      <p className="text-sm text-muted-foreground mt-1 mb-6">
-                        Ajuster la taille du texte pour une meilleure lisibilité
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <span className="text-sm">A</span>
-                      <Slider
-                        id="font-size"
-                        min={12}
-                        max={24}
-                        step={1}
-                        value={fontSize}
-                        onValueChange={setFontSize}
-                        className="w-[60%]"
-                      />
-                      <span className="text-lg font-bold">A</span>
-                      <span className="ml-4 text-sm font-medium">{fontSize[0]}px</span>
-                    </div>
-                  </div>
-                  
-                  <div className="pt-4">
-                    <Button>Appliquer les changements</Button>
-                  </div>
-                </div>
+            <TabsContent value="utilisateurs" className="mt-0">
+              <div className="overflow-x-auto">
+                <table className="data-table">
+                  <thead>
+                    <tr className="bg-gray-50 border-b">
+                      <th className="w-12"></th>
+                      <th>Utilisateur</th>
+                      <th>Email</th>
+                      <th>Rôle</th>
+                      <th>Statut</th>
+                      <th>Dernière Connexion</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {users.map((user) => (
+                      <tr key={user.id} className="hover:bg-gray-50 border-b">
+                        <td>
+                          <UserAvatar name={user.name.charAt(0)} size="sm" />
+                        </td>
+                        <td className="font-medium">{user.name}</td>
+                        <td>{user.email}</td>
+                        <td>{user.role}</td>
+                        <td>
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            Actif
+                          </span>
+                        </td>
+                        <td>{user.lastLogin}</td>
+                        <td>
+                          <div className="flex gap-2">
+                            <button className="text-gray-500 hover:text-primary">
+                              <Pencil size={16} />
+                            </button>
+                            <button className="text-gray-500 hover:text-red-500">
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </TabsContent>
             
-            <TabsContent value="notifications">
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                <h2 className="text-xl font-medium mb-6">
-                  <div className="flex items-center gap-2">
-                    <Bell size={20} />
-                    <span>Paramètres de notification</span>
-                  </div>
-                </h2>
-                
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label htmlFor="email-notifs" className="text-base">Notifications par email</Label>
-                      <p className="text-sm text-muted-foreground">Recevoir des rapports quotidiens par email</p>
-                    </div>
-                    <Switch
-                      id="email-notifs"
-                      checked={notifications.email}
-                      onCheckedChange={(checked) => setNotifications({...notifications, email: checked})}
-                    />
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label htmlFor="push-notifs" className="text-base">Notifications push</Label>
-                      <p className="text-sm text-muted-foreground">Recevoir des alertes directement dans le navigateur</p>
-                    </div>
-                    <Switch
-                      id="push-notifs"
-                      checked={notifications.push}
-                      onCheckedChange={(checked) => setNotifications({...notifications, push: checked})}
-                    />
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label htmlFor="sound-notifs" className="text-base">Sons de notification</Label>
-                      <p className="text-sm text-muted-foreground">Jouer un son lors de la réception d'une alerte</p>
-                    </div>
-                    <Switch
-                      id="sound-notifs"
-                      checked={notifications.sound}
-                      onCheckedChange={(checked) => setNotifications({...notifications, sound: checked})}
-                    />
-                  </div>
-                </div>
+            <TabsContent value="roles">
+              <div className="text-center py-12 text-gray-500">
+                Contenu de la section Rôles à implémenter
               </div>
             </TabsContent>
             
-            <TabsContent value="security">
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                <h2 className="text-xl font-medium mb-6">Sécurité du compte</h2>
-                
-                <div className="space-y-6">
-                  <Button variant="outline" className="gap-2">
-                    <Users size={18} />
-                    <span>Gérer les accès utilisateurs</span>
-                  </Button>
-                  
-                  <div className="pt-4 space-y-4">
-                    <h3 className="font-medium">Autres paramètres de sécurité</h3>
-                    <Button variant="outline">Changer le mot de passe</Button>
-                    <Button variant="outline" className="ml-4">Configurer 2FA</Button>
-                  </div>
-                </div>
+            <TabsContent value="certificats">
+              <div className="text-center py-12 text-gray-500">
+                Contenu de la section Certificats à implémenter
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="configuration">
+              <div className="text-center py-12 text-gray-500">
+                Contenu de la section Configuration à implémenter
               </div>
             </TabsContent>
           </Tabs>
