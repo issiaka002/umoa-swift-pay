@@ -4,13 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 
 const LoginForm = () => {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showVerification, setShowVerification] = useState(false);
-  const [otpValue, setOtpValue] = useState("");
+  const [verificationCode, setVerificationCode] = useState(['', '', '', '', '', '']);
   const navigate = useNavigate();
 
   const handleLogin = (e: React.FormEvent) => {
@@ -32,7 +31,7 @@ const LoginForm = () => {
   const handleVerification = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (otpValue.length < 6) {
+    if (verificationCode.some(digit => digit === '')) {
       toast({
         title: "Code incomplet",
         description: "Veuillez saisir le code complet.",
@@ -43,6 +42,24 @@ const LoginForm = () => {
     
     // Navigate to dashboard on successful verification
     navigate('/');
+  };
+
+  const handleCodeChange = (index: number, value: string) => {
+    if (value.length > 1) {
+      value = value.charAt(0);
+    }
+    
+    const newCode = [...verificationCode];
+    newCode[index] = value;
+    setVerificationCode(newCode);
+    
+    // Auto-focus next input
+    if (value && index < 5) {
+      const nextInput = document.getElementById(`code-${index + 1}`);
+      if (nextInput) {
+        nextInput.focus();
+      }
+    }
   };
 
   return (
@@ -113,27 +130,26 @@ const LoginForm = () => {
                 Veuillez saisir le code reçu sur votre appareil mobile
               </p>
               
-              <div className="mt-4">
-                <form onSubmit={handleVerification}>
-                  <InputOTP value={otpValue} onChange={setOtpValue} maxLength={6} className="flex justify-center gap-2">
-                    <InputOTPGroup>
-                      <InputOTPSlot index={0} className="h-12 w-12" />
-                      <InputOTPSlot index={1} className="h-12 w-12" />
-                      <InputOTPSlot index={2} className="h-12 w-12" />
-                      <InputOTPSlot index={3} className="h-12 w-12" />
-                      <InputOTPSlot index={4} className="h-12 w-12" />
-                      <InputOTPSlot index={5} className="h-12 w-12" />
-                    </InputOTPGroup>
-                  </InputOTP>
-                  
-                  <Button 
-                    type="submit"
-                    className="w-full bg-primary hover:bg-primary/90 mt-6"
-                  >
-                    Vérifier
-                  </Button>
-                </form>
+              <div className="input-otp mt-4 justify-center">
+                {verificationCode.map((digit, index) => (
+                  <input
+                    key={index}
+                    id={`code-${index}`}
+                    type="text"
+                    maxLength={1}
+                    value={digit}
+                    onChange={(e) => handleCodeChange(index, e.target.value)}
+                    className="text-center border border-gray-300 rounded p-2 w-10 h-12 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+                  />
+                ))}
               </div>
+              
+              <Button 
+                onClick={handleVerification} 
+                className="w-full bg-primary hover:bg-primary/90 mt-4"
+              >
+                Vérifier
+              </Button>
             </div>
           </div>
         )}
