@@ -1,4 +1,6 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -14,7 +16,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 221.2 83.2% 53.3%;
+    --primary: 221 71% 26%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
@@ -31,7 +33,7 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    --ring: 222.2 84% 4.9%;
 
     --radius: 0.5rem;
   }
@@ -46,7 +48,7 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 217.2 91.2% 59.8%;
+    --primary: 210 40% 98%;
     --primary-foreground: 222.2 47.4% 11.2%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -71,44 +73,69 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: 'Inter', sans-serif;
   }
 }
 
-/* Sidebar styles */
-.bg-sidebar {
-  @apply bg-primary;
+.status-success {
+  @apply bg-success/20 text-success rounded-full px-2 py-0.5 text-xs font-medium;
 }
 
-.sidebar-link {
-  @apply flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-white/10;
-  @apply text-white font-medium;
+.status-pending {
+  @apply bg-pending/20 text-pending rounded-full px-2 py-0.5 text-xs font-medium;
 }
 
-.sidebar-link.active {
-  @apply bg-white/10;
+.status-error {
+  @apply bg-error/20 text-error rounded-full px-2 py-0.5 text-xs font-medium;
 }
 
-/* Data table styles */
+.stat-card {
+  @apply bg-white rounded-lg shadow-sm p-4 flex flex-col h-full;
+}
+
+.stat-value {
+  @apply text-2xl font-bold mt-2;
+}
+
+.stat-label {
+  @apply text-sm text-gray-500;
+}
+
+.stat-trend-up {
+  @apply text-xs text-success flex items-center mt-1;
+}
+
+.stat-trend-down {
+  @apply text-xs text-error flex items-center mt-1;
+}
+
 .data-table {
-  @apply w-full border-collapse text-sm;
+  @apply w-full text-sm text-left;
 }
 
 .data-table th {
-  @apply border-b border-gray-200 bg-gray-50 px-4 py-3 text-left font-medium text-gray-600 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300;
+  @apply py-3 px-4 text-gray-600 font-medium;
 }
 
 .data-table td {
-  @apply border-b border-gray-100 px-4 py-3 dark:border-gray-600;
+  @apply py-3 px-4 border-t border-gray-100;
 }
 
-/* Input OTP style */
+.sidebar-link {
+  @apply flex items-center gap-3 px-4 py-2 text-sidebar-foreground/80 hover:text-sidebar-foreground hover:bg-white/10 rounded-md transition-all;
+}
+
+.sidebar-link.active {
+  @apply bg-white/10 text-sidebar-foreground;
+}
+
 .input-otp {
-  @apply flex items-center gap-2 justify-center;
+  @apply flex gap-2;
 }
 
 .input-otp input {
-  @apply text-center border border-gray-300 rounded p-2 w-10 h-12 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white;
+  @apply w-12 h-12 border border-gray-300 rounded-md text-center text-xl;
 }
