@@ -7,7 +7,8 @@ import {
   Users, 
   FileText, 
   Settings,
-  LogOut
+  LogOut,
+  Sliders
 } from "lucide-react";
 import { cn } from '@/lib/utils';
 import UserAvatar from './UserAvatar';
@@ -58,6 +59,11 @@ const Sidebar = () => {
         <Link to="/configuration" className={cn("sidebar-link", isActive("/configuration") && "active")}>
           <Settings size={20} />
           <span>Configuration</span>
+        </Link>
+
+        <Link to="/parametres" className={cn("sidebar-link", isActive("/parametres") && "active")}>
+          <Sliders size={20} />
+          <span>Paramètres</span>
         </Link>
       </nav>
       
