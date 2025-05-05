@@ -1,131 +1,81 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Header from '@/components/Header';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import StatusBadge from "@/components/StatusBadge";
-import { 
-  Search, 
-  Filter, 
-  ChevronDown, 
-  Trash, 
-  Edit, 
-  Eye, 
-  Plus 
-} from 'lucide-react';
+import SearchInput from '@/components/SearchInput';
+import Pagination from '@/components/Pagination';
+import StatusBadge from '@/components/StatusBadge';
+import { Button } from '@/components/ui/button';
+import { Eye, Edit, Filter } from 'lucide-react';
 
-// Modèle de données pour les participants
-interface Participant {
-  uuid: string;
-  code_membre: string;
-  nom: string;
-  type: string;
-  pays: string;
-  est_direct: boolean;
-  id_sponsor: string;
-  statut: string;
-  date_creation: string;
-  date_modification: string;
-}
-
-// Données de test pour les participants
-const participantsData: Participant[] = [
+// Données d'exemple pour les participants
+const participantsData = [
   {
     uuid: '1',
     code_membre: 'CICI001',
     nom: 'PSP EME CI 001',
     type: 'PSP',
-    pays: 'CI',
+    pays: 'Côte d\'Ivoire',
     est_direct: true,
     id_sponsor: '',
     statut: 'Actif',
-    date_creation: '2024-01-15',
-    date_modification: '2024-03-20',
+    date_creation: '2023-01-15T10:30:00',
+    date_modification: '2023-05-20T14:45:00'
   },
   {
     uuid: '2',
-    code_membre: 'MLSP003',
-    nom: 'PSP EME ML 003',
-    type: 'PSP',
-    pays: 'ML',
-    est_direct: false,
-    id_sponsor: 'CICI001',
-    statut: 'Actif',
-    date_creation: '2024-02-10',
-    date_modification: '2024-03-25',
-  },
-  {
-    uuid: '3',
     code_membre: 'SNSN002',
     nom: 'Banque SN 002',
     type: 'Banque',
-    pays: 'SN',
+    pays: 'Sénégal',
     est_direct: true,
     id_sponsor: '',
     statut: 'Actif',
-    date_creation: '2024-02-15',
-    date_modification: '2024-02-15',
+    date_creation: '2023-02-10T09:15:00',
+    date_modification: '2023-06-12T11:20:00'
+  },
+  {
+    uuid: '3',
+    code_membre: 'MLSP003',
+    nom: 'PSP Mali SP 003',
+    type: 'PSP',
+    pays: 'Mali',
+    est_direct: false,
+    id_sponsor: '1',
+    statut: 'Inactif',
+    date_creation: '2023-03-05T11:45:00',
+    date_modification: '2023-04-18T16:30:00'
   },
   {
     uuid: '4',
     code_membre: 'BJBQ004',
     nom: 'Banque BJ 004',
     type: 'Banque',
-    pays: 'BJ',
-    est_direct: false,
-    id_sponsor: 'CICI001',
-    statut: 'Inactif',
-    date_creation: '2024-03-01',
-    date_modification: '2024-04-10',
-  },
-  {
-    uuid: '5',
-    code_membre: 'PIUMOA',
-    nom: 'BCEAO',
-    type: 'Banque Centrale',
-    pays: 'UEMOA',
+    pays: 'Bénin',
     est_direct: true,
     id_sponsor: '',
-    statut: 'Actif',
-    date_creation: '2023-12-01',
-    date_modification: '2024-01-05',
-  },
+    statut: 'En attente',
+    date_creation: '2023-04-22T13:20:00',
+    date_modification: '2023-07-01T10:10:00'
+  }
 ];
 
 const Participants = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [filteredParticipants, setFilteredParticipants] = useState(participantsData);
   const [typeFilter, setTypeFilter] = useState('Tous');
   const [paysFilter, setPaysFilter] = useState('Tous');
   const [statutFilter, setStatutFilter] = useState('Tous');
-  const [filteredParticipants, setFilteredParticipants] = useState<Participant[]>(participantsData);
-
-  // Types de participants uniques pour le filtre
-  const types = ['Tous', ...Array.from(new Set(participantsData.map(p => p.type)))];
   
-  // Pays uniques pour le filtre
-  const pays = ['Tous', ...Array.from(new Set(participantsData.map(p => p.pays)))];
-  
-  // Statuts uniques pour le filtre
-  const statuts = ['Tous', ...Array.from(new Set(participantsData.map(p => p.statut)))];
-
-  // Filtrer les participants en fonction des critères
-  useEffect(() => {
+  // Filtrer les participants
+  React.useEffect(() => {
     let filtered = participantsData;
     
-    // Filtre par recherche
+    // Filtre de recherche
     if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        p => p.code_membre.toLowerCase().includes(query) || 
-             p.nom.toLowerCase().includes(query)
+      filtered = filtered.filter(p => 
+        p.nom.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.code_membre.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
     
@@ -147,24 +97,42 @@ const Participants = () => {
     setFilteredParticipants(filtered);
   }, [searchQuery, typeFilter, paysFilter, statutFilter]);
 
+  const getStatutBadge = (statut: string) => {
+    switch (statut) {
+      case 'Actif':
+        return <StatusBadge status="success" text={statut} />;
+      case 'Inactif':
+        return <StatusBadge status="danger" text={statut} />;
+      case 'En attente':
+        return <StatusBadge status="pending" text={statut} />;
+      default:
+        return <StatusBadge status="default" text={statut} />;
+    }
+  };
+  
+  // Types de participants uniques pour le filtre
+  const types = ['Tous', ...Array.from(new Set(participantsData.map(p => p.type)))];
+  
+  // Pays uniques pour le filtre
+  const pays = ['Tous', ...Array.from(new Set(participantsData.map(p => p.pays)))];
+  
+  // Statuts uniques pour le filtre
+  const statuts = ['Tous', ...Array.from(new Set(participantsData.map(p => p.statut)))];
+
   return (
-    <div className="flex-1 bg-background min-h-screen dark:bg-gray-900">
+    <div className="flex-1 bg-background dark:bg-gray-900 min-h-screen">
       <Header title="Gestion des Participants" />
       
       <main className="p-6">
         {/* Filtres et recherche */}
-        <div className="bg-white rounded-lg shadow-sm p-5 mb-6 dark:bg-gray-800">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-5 mb-6">
           <div className="flex flex-wrap gap-4">
-            <div className="relative flex-grow max-w-md">
-              <Input
-                type="text"
-                placeholder="Rechercher un participant..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2"
-              />
-              <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            </div>
+            <SearchInput 
+              placeholder="Rechercher un participant..." 
+              value={searchQuery} 
+              onChange={setSearchQuery} 
+              className="flex-grow max-w-md"
+            />
             
             <div className="flex items-center gap-2">
               <Filter size={18} className="text-gray-500 dark:text-gray-400" />
@@ -179,7 +147,7 @@ const Participants = () => {
                 onChange={(e) => setTypeFilter(e.target.value)}
               >
                 {types.map(type => (
-                  <option key={type}>{type}</option>
+                  <option key={type} value={type}>{type}</option>
                 ))}
               </select>
             </div>
@@ -192,7 +160,7 @@ const Participants = () => {
                 onChange={(e) => setPaysFilter(e.target.value)}
               >
                 {pays.map(p => (
-                  <option key={p}>{p}</option>
+                  <option key={p} value={p}>{p}</option>
                 ))}
               </select>
             </div>
@@ -205,107 +173,79 @@ const Participants = () => {
                 onChange={(e) => setStatutFilter(e.target.value)}
               >
                 {statuts.map(s => (
-                  <option key={s}>{s}</option>
+                  <option key={s} value={s}>{s}</option>
                 ))}
               </select>
-            </div>
-            
-            <div className="ml-auto">
-              <Button className="flex items-center gap-2">
-                <Plus size={16} /> Nouveau Participant
-              </Button>
             </div>
           </div>
         </div>
         
         {/* Liste des participants */}
-        <div className="bg-white rounded-lg shadow-sm dark:bg-gray-800">
-          <div className="p-5 border-b dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-5">
+          <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-medium text-gray-800 dark:text-white">Liste des Participants</h2>
+            
+            <Button className="bg-primary hover:bg-primary/90 dark:bg-blue-600 dark:hover:bg-blue-700">
+              Nouveau Participant
+            </Button>
           </div>
           
           <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Code Membre</TableHead>
-                  <TableHead>Nom</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Pays</TableHead>
-                  <TableHead>Participation</TableHead>
-                  <TableHead>Sponsor</TableHead>
-                  <TableHead>Statut</TableHead>
-                  <TableHead>Date Création</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+            <table className="data-table min-w-full">
+              <thead>
+                <tr className="bg-gray-50 dark:bg-gray-700 border-b dark:border-gray-600">
+                  <th>Code Membre</th>
+                  <th>Nom</th>
+                  <th>Type</th>
+                  <th>Pays</th>
+                  <th>Accès</th>
+                  <th>Statut</th>
+                  <th>Date de création</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
                 {filteredParticipants.map((participant) => (
-                  <TableRow key={participant.uuid} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                    <TableCell className="font-medium">{participant.code_membre}</TableCell>
-                    <TableCell>{participant.nom}</TableCell>
-                    <TableCell>{participant.type}</TableCell>
-                    <TableCell>{participant.pays}</TableCell>
-                    <TableCell>
+                  <tr key={participant.uuid} className="hover:bg-gray-50 dark:hover:bg-gray-700 border-b dark:border-gray-600">
+                    <td className="font-medium">{participant.code_membre}</td>
+                    <td>{participant.nom}</td>
+                    <td>{participant.type}</td>
+                    <td>{participant.pays}</td>
+                    <td>
                       {participant.est_direct ? (
-                        <span className="bg-blue-100 text-blue-800 py-1 px-2 rounded text-xs dark:bg-blue-900 dark:text-blue-300">
+                        <span className="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 py-1 px-2 rounded text-xs font-medium">
                           Direct
                         </span>
                       ) : (
-                        <span className="bg-purple-100 text-purple-800 py-1 px-2 rounded text-xs dark:bg-purple-900 dark:text-purple-300">
+                        <span className="bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 py-1 px-2 rounded text-xs font-medium">
                           Indirect
                         </span>
                       )}
-                    </TableCell>
-                    <TableCell>{participant.id_sponsor || 'N/A'}</TableCell>
-                    <TableCell>
-                      {participant.statut === 'Actif' ? (
-                        <StatusBadge status="success" text="Actif" />
-                      ) : (
-                        <StatusBadge status="error" text="Inactif" />
-                      )}
-                    </TableCell>
-                    <TableCell>{participant.date_creation}</TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button variant="outline" size="icon">
-                          <Eye size={16} />
+                    </td>
+                    <td>{getStatutBadge(participant.statut)}</td>
+                    <td>{new Date(participant.date_creation).toLocaleDateString()}</td>
+                    <td>
+                      <div className="flex gap-2">
+                        <Button size="icon" variant="ghost" className="h-8 w-8">
+                          <Eye size={16} className="text-gray-500 dark:text-gray-400" />
                         </Button>
-                        <Button variant="outline" size="icon">
-                          <Edit size={16} />
-                        </Button>
-                        <Button variant="outline" size="icon">
-                          <Trash size={16} />
+                        <Button size="icon" variant="ghost" className="h-8 w-8">
+                          <Edit size={16} className="text-gray-500 dark:text-gray-400" />
                         </Button>
                       </div>
-                    </TableCell>
-                  </TableRow>
+                    </td>
+                  </tr>
                 ))}
-                
-                {filteredParticipants.length === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={9} className="text-center py-8 text-gray-500 dark:text-gray-400">
-                      Aucun participant trouvé
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
+              </tbody>
+            </table>
           </div>
           
-          <div className="p-4 flex justify-between items-center border-t dark:border-gray-700">
-            <div className="text-sm text-gray-500 dark:text-gray-400">
-              Affichage de {filteredParticipants.length} sur {participantsData.length} participants
-            </div>
-            
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" disabled>
-                Précédent
-              </Button>
-              <Button variant="outline" size="sm">
-                Suivant
-              </Button>
-            </div>
+          <div className="mt-4">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={Math.ceil(filteredParticipants.length / 10)}
+              onPageChange={setCurrentPage}
+            />
           </div>
         </div>
       </main>
