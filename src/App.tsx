@@ -11,7 +11,6 @@ import Messages from "@/pages/Messages";
 import Participants from "@/pages/Participants";
 import LoginPage from "@/pages/LoginPage";
 import Admin from "@/pages/Admin";
-import Settings from "@/pages/Settings";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,7 +31,6 @@ const App = () => (
             <Route path="/participants" element={<Participants />} />
             <Route path="/rapports" element={<NotFound />} />
             <Route path="/configuration" element={<Admin />} />
-            <Route path="/parametres" element={<Settings />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
