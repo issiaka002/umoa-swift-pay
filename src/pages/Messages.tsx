@@ -8,13 +8,6 @@ import { Eye, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 
 // Sample message data
 const recentMessages = [
@@ -37,26 +30,6 @@ const recentMessages = [
     messageId: 'MCIC001KJhjhgl...',
     status: 'Envoyé',
     participant: 'BCEAO (PIUMOA)',
-  },
-  {
-    id: '3',
-    direction: 'Entrant',
-    date: '05/05/2024 13:45',
-    title: 'Requête compte',
-    type: 'acmt.010',
-    messageId: 'MJDIO493JDLMkdl...',
-    status: 'Traité',
-    participant: 'Société Générale (SGBCI)',
-  },
-  {
-    id: '4',
-    direction: 'Sortant',
-    date: '05/05/2024 13:50',
-    title: 'Réponse requête compte',
-    type: 'acmt.011',
-    messageId: 'MBKIO495UYLPJlm...',
-    status: 'Envoyé',
-    participant: 'ECOBANK (ECOCI)',
   }
 ];
 
@@ -167,59 +140,45 @@ const Messages = () => {
           </div>
         </div>
         
-        {/* Recent Messages as Carousel */}
+        {/* Recent Messages */}
         <div className="mb-8">
           <h2 className="text-lg font-medium text-gray-800 mb-4">Messages Récents</h2>
           
-          <Carousel 
-            opts={{
-              align: "start",
-              loop: true,
-            }}
-            className="w-full"
-          >
-            <CarouselContent>
-              {recentMessages.map((message) => (
-                <CarouselItem key={message.id} className="md:basis-1/2 lg:basis-1/3">
-                  <div className="bg-white rounded-lg shadow-sm p-5 h-full">
-                    <div className="flex justify-between items-center mb-3">
-                      {getDirectionBadge(message.direction)}
-                      <span className="text-sm text-gray-500">{message.date}</span>
-                    </div>
-                    
-                    <h3 className="font-medium mb-2">{message.title}</h3>
-                    <div className="text-sm text-gray-600 space-y-1">
-                      <p>Type: {message.type}</p>
-                      <p>ID: {message.messageId}</p>
-                    </div>
-                    
-                    <div className="mt-4 flex justify-between items-center">
-                      <div>
-                        {message.status === 'Traité' ? (
-                          <StatusBadge status="success" text="Traité" />
-                        ) : (
-                          <StatusBadge status="success" text="Envoyé" />
-                        )}
-                      </div>
-                      
-                      <div className="flex gap-2">
-                        <button className="text-gray-600 hover:text-primary bg-gray-100 p-2 rounded">
-                          Détails
-                        </button>
-                        <button className="text-gray-600 hover:text-primary bg-gray-100 p-2 rounded">
-                          Historique
-                        </button>
-                      </div>
-                    </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {recentMessages.map((message) => (
+              <div key={message.id} className="bg-white rounded-lg shadow-sm p-5">
+                <div className="flex justify-between items-center mb-3">
+                  {getDirectionBadge(message.direction)}
+                  <span className="text-sm text-gray-500">{message.date}</span>
+                </div>
+                
+                <h3 className="font-medium mb-2">{message.title}</h3>
+                <div className="text-sm text-gray-600 space-y-1">
+                  <p>Type: {message.type}</p>
+                  <p>ID: {message.messageId}</p>
+                </div>
+                
+                <div className="mt-4 flex justify-between items-center">
+                  <div>
+                    {message.status === 'Traité' ? (
+                      <StatusBadge status="success" text="Traité" />
+                    ) : (
+                      <StatusBadge status="success" text="Envoyé" />
+                    )}
                   </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <div className="flex justify-center gap-2 mt-4">
-              <CarouselPrevious className="static translate-y-0" />
-              <CarouselNext className="static translate-y-0" />
-            </div>
-          </Carousel>
+                  
+                  <div className="flex gap-2">
+                    <button className="text-gray-600 hover:text-primary bg-gray-100 p-2 rounded">
+                      Détails
+                    </button>
+                    <button className="text-gray-600 hover:text-primary bg-gray-100 p-2 rounded">
+                      Historique
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
         
         {/* Messages List */}
